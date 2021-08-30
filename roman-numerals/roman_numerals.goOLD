@@ -1,0 +1,54 @@
+// Package romannumerals convert an arabic number to the corresponding
+// roman number.
+package romannumerals
+
+import (
+	"fmt"
+)
+
+type arabicToRoman struct {
+	section int
+	letter  string
+}
+
+var arabicToNum = []arabicToRoman{
+	{1000, "M"},
+	{900, "CM"},
+	{500, "D"},
+	{400, "CD"},
+	{100, "C"},
+	{90, "XC"},
+	{50, "L"},
+	{40, "XL"},
+	{10, "X"},
+	{9, "IX"},
+	{5, "V"},
+	{4, "IV"},
+	{1, "I"},
+}
+
+// ToRomanNumeral takes an arabic number and returns
+// its corresponding roman translation.
+func ToRomanNumeral(n int) (string, error) {
+	if n > 3000 || n <= 0 {
+		return "", fmt.Errorf("cannot convert null or negative number or number over 3000")
+	}
+	roman := ""
+	for n != 0 {
+		cSection := arabicToNum[getNextSection(n)]
+		roman += cSection.letter
+		n -= cSection.section
+	}
+	return roman, nil
+}
+
+// Find next section for numeral reducing
+func getNextSection(n int) int {
+	for i, tr := range arabicToNum {
+		if tr.section > n {
+			continue
+		}
+		return i
+	}
+	return 0
+}
